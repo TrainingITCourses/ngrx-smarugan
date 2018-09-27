@@ -1,0 +1,14 @@
+div.item {
+  border: solid 1px lightgray;
+  margin: 2px 4px;
+}
+
+div.item span.content {
+  padding: 10px;
+}
+
+div.item span.index {
+  margin-right: 5px;
+  padding: 0 10px;
+  border-right: solid 1px lightgray;
+}

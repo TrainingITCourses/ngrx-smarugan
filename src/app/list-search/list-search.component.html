@@ -1,0 +1,6 @@
+<span *ngIf="items.length == 0; else showItems">Results not found. Use the filter for obtain results.</span>
+
+<ng-template #showItems>
+  Total results: {{ items.length }}
+  <app-item-search [items]="items"></app-item-search>
+</ng-template>

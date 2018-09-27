@@ -1,0 +1,22 @@
+<form [formGroup]="form">
+  <div>
+    <label for="critery-type">Select a type of critery: </label>
+    <select name="critery-type" formControlName="critery-type" (change)="onSelectCriteryType()">
+      <option *ngFor="let critery of criteries" [value]="critery">{{ critery | titlecase }}</option>
+    </select>
+  </div>
+  <div *ngIf="showValues">
+    <label for="critery-values">Select one:</label>
+    <select name="critery-values" formControlName="critery-values" (change)="onSelectCriteryValue()">
+      <option *ngFor="let criteryValue of criteryValues; let i=index" [value]="i">
+        {{
+          (criteryValue['abbrev']? '[' + criteryValue['abbrev'] + '] ' : '') +
+          criteryValue['name']
+        }}
+      </option>
+    </select>
+  </div>
+  <div *ngIf="(form.touched && !form.valid)" class="message-error">
+    <div>Debe selecionar el tipo de criterio y uno de los valores posibles.</div>
+  </div>
+</form>
