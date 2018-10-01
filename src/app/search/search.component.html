@@ -1,14 +1,14 @@
 <form [formGroup]="form">
   <div>
     <label for="critery-type">Select a type of critery: </label>
-    <select name="critery-type" formControlName="critery-type" (change)="onSelectCriteryType()">
+    <select name="critery-type" formControlName="critery-type" (change)="showValues = true">
       <option *ngFor="let critery of criteries" [value]="critery">{{ critery | titlecase }}</option>
     </select>
   </div>
   <div *ngIf="showValues">
     <label for="critery-values">Select one:</label>
     <select name="critery-values" formControlName="critery-values" (change)="onSelectCriteryValue()">
-      <option *ngFor="let criteryValue of criteryValues; let i=index" [value]="i">
+      <option *ngFor="let criteryValue of (criteryValues$[form.value['critery-type']] | async); let i=index" [value]="criteryValue['id']" [attr.selected]="i == 0 ? true : null">
         {{
           (criteryValue['abbrev']? '[' + criteryValue['abbrev'] + '] ' : '') +
           criteryValue['name']

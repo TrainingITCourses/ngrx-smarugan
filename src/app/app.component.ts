@@ -1,8 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { ApiService } from './services/api.service';
 
-import { filter, retry } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { ApiService } from './services/api.service';
+import { GlobalStoreService, GlobalSlideTypes } from './store/global-store.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,7 +12,13 @@ import { Observable } from 'rxjs';
 export class AppComponent {
   public items: any = [];
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private storeService: GlobalStoreService) {
+    // Load data
+    this.apiService.getLaunches();
+    this.apiService.getAgencies();
+    this.apiService.getStatusTypes();
+    this.apiService.getMissionTypes();
+  }
 
   filterLaunches(critery) {
     console.log('FILTER TO APPLY: ', critery);
@@ -24,68 +29,68 @@ export class AppComponent {
       case 'agency':
         this.filterByAgency(critery);
         break;
-      case 'type':
-        this.filterByType(critery);
+      case 'missionType':
+        this.filterByMissionType(critery);
         break;
+      default:
+        this.items = [];
     }
   }
 
   private filterByStatus(critery) {
-    this.apiService.getLaunches$().subscribe(launches => {
-      this.items = launches.filter(launch => {
-        return launch['status'] === critery['value']['id'];
-      });
+    const filtered = [];
+    this.storeService.selectSnapShot(GlobalSlideTypes.launches).filter(launch => {
+        if (launch['status'] === critery['id']) {
+          filtered.push(launch);
+        }
     });
+    this.items = filtered;
   }
 
   private filterByAgency(critery) {
-    this.apiService.getLaunches$().subscribe(launches => {
-      const filtered = [];
-      for (const launch of launches) {
-        let includedLaunch = false;
-        // Agencies can be on rocket property
-        if (launch['rocket'] !== null && launch['rocket']['agencies'] !== null) {
-          for (const agency of launch['rocket']['agencies']) {
-            if (agency['id'] === critery['value']['id']) {
-              filtered.push(launch);
-              includedLaunch = true;
-              break;
-            }
+    const filtered = [];
+    this.storeService.selectSnapShot(GlobalSlideTypes.launches).filter(launch => {
+      let includedLaunch = false;
+      // Agencies can be on rocket property
+      if (launch['rocket'] !== null && launch['rocket']['agencies'] !== null) {
+        for (const agency of launch['rocket']['agencies']) {
+          if (agency['id'] === critery['id']) {
+            filtered.push(launch);
+            includedLaunch = true;
+            break;
           }
         }
-        // Agencies can be on missions property
-        if (!includedLaunch && launch['missions'] !== null) {
-          for (const mission of launch['missions']) {
-            if (!includedLaunch && mission['agencies'] !== null) {
-              for (const agency of mission['agencies']) {
-                if (agency['id'] === critery['value']['id']) {
-                  filtered.push(launch);
-                  includedLaunch = true;
-                  break;
-                }
+      }
+      // Agencies can be on missions property
+      if (!includedLaunch && launch['missions'] !== null) {
+        for (const mission of launch['missions']) {
+          if (!includedLaunch && mission['agencies'] !== null) {
+            for (const agency of mission['agencies']) {
+              if (agency['id'] === critery['id']) {
+                filtered.push(launch);
+                includedLaunch = true;
+                break;
               }
             }
           }
         }
       }
-      this.items = filtered;
     });
+    this.items = filtered;
   }
 
-  private filterByType(critery) {
-    this.apiService.getLaunches$().subscribe(launches => {
-      const filtered = [];
-      for (const launch of launches) {
-        if (launch['missions'] !== null) {
-          for (const mission of launch['missions']) {
-            if (mission['type'] === critery['value']['id']) {
-              filtered.push(launch);
-              break;
-            }
+  private filterByMissionType(critery) {
+    const filtered = [];
+    this.storeService.selectSnapShot(GlobalSlideTypes.launches).filter(launch => {
+      if (launch['missions'] !== null) {
+        for (const mission of launch['missions']) {
+          if (mission['type'] === critery['id']) {
+            filtered.push(launch);
+            break;
           }
         }
       }
-      this.items = filtered;
     });
+    this.items = filtered;
   }
 }
