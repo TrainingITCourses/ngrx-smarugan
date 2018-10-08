@@ -1,9 +1,9 @@
 import { Component, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { GlobalStoreService, GlobalSlideTypes } from '../store/global-store.service';
-import { Observable } from 'rxjs';
-import { GlobalActionTypes } from '../store/global-store.actions';
+import { Store } from '@ngrx/store';
+import { State } from '../reducers';
+import { map } from 'rxjs/operators';
 
 interface TypeSearch {
   'text-search': String;
@@ -33,12 +33,12 @@ export class SearchComponent implements OnInit {
 
   @Output() onFilterLaunches = new EventEmitter();
 
-  constructor(private storeService: GlobalStoreService) {}
+  constructor(private store: Store<State>) {}
 
   ngOnInit() {
-    this.criteryValues$['status'] = this.storeService.select$(GlobalSlideTypes.statuses);
-    this.criteryValues$['agency'] = this.storeService.select$(GlobalSlideTypes.agencies);
-    this.criteryValues$['missionType'] = this.storeService.select$(GlobalSlideTypes.missionTypes);
+    this.criteryValues$['status'] = this.store.select('status').pipe(map(st => st.statuses));
+    this.criteryValues$['agency'] = this.store.select('agency').pipe(map(st => st.agencies));
+    this.criteryValues$['missionType'] = this.store.select('missionType').pipe(map(st => st.missionTypes));
 
     this.form = new FormGroup({
       'critery-type': new FormControl(this.criteries[0], [Validators.required]),

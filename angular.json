@@ -126,5 +126,8 @@
       }
     }
   },
-  "defaultProject": "deteccion-cambio"
+  "defaultProject": "deteccion-cambio",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }

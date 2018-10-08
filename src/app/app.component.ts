@@ -1,7 +1,12 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
-import { ApiService } from './services/api.service';
-import { GlobalStoreService, GlobalSlideTypes } from './store/global-store.service';
+import { Store } from '@ngrx/store';
+import { State } from './reducers';
+import { LoadLaunches } from './reducers/launch/launch.actions';
+import { LoadStatuses } from './reducers/status/status.actions';
+import { LoadAgencies } from './reducers/agency/agency.actions';
+import { LoadMissionTypes } from './reducers/mission-type/mission-type.actions';
+import { map } from 'rxjs/operators';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,12 +17,12 @@ import { GlobalStoreService, GlobalSlideTypes } from './store/global-store.servi
 export class AppComponent {
   public items: any = [];
 
-  constructor(private apiService: ApiService, private storeService: GlobalStoreService) {
+  constructor(private store: Store<State>) {
     // Load data
-    this.apiService.getLaunches();
-    this.apiService.getAgencies();
-    this.apiService.getStatusTypes();
-    this.apiService.getMissionTypes();
+    this.store.dispatch(new LoadLaunches());
+    this.store.dispatch(new LoadStatuses());
+    this.store.dispatch(new LoadAgencies());
+    this.store.dispatch(new LoadMissionTypes());
   }
 
   filterLaunches(critery) {
@@ -38,59 +43,67 @@ export class AppComponent {
   }
 
   private filterByStatus(critery) {
-    const filtered = [];
-    this.storeService.selectSnapShot(GlobalSlideTypes.launches).filter(launch => {
-        if (launch['status'] === critery['id']) {
-          filtered.push(launch);
-        }
+    this.store.select('launch').pipe(
+      map(st => st.launches),
+    ).subscribe((launches) => {
+      this.items = launches.filter(launch => {
+        return launch['status'] === critery['id'];
+      });
     });
-    this.items = filtered;
   }
 
   private filterByAgency(critery) {
-    const filtered = [];
-    this.storeService.selectSnapShot(GlobalSlideTypes.launches).filter(launch => {
-      let includedLaunch = false;
-      // Agencies can be on rocket property
-      if (launch['rocket'] !== null && launch['rocket']['agencies'] !== null) {
-        for (const agency of launch['rocket']['agencies']) {
-          if (agency['id'] === critery['id']) {
-            filtered.push(launch);
-            includedLaunch = true;
-            break;
+    this.store.select('launch').pipe(
+      map(st => st.launches)
+    ).subscribe((launches) => {
+      const filtered = [];
+      for (const launch of launches) {
+        let includedLaunch = false;
+        // Agencies can be on rocket property
+        if (launch['rocket'] !== null && launch['rocket']['agencies'] !== null) {
+          for (const agency of launch['rocket']['agencies']) {
+            if (agency['id'] === critery['id']) {
+              filtered.push(launch);
+              includedLaunch = true;
+              break;
+            }
           }
         }
-      }
-      // Agencies can be on missions property
-      if (!includedLaunch && launch['missions'] !== null) {
-        for (const mission of launch['missions']) {
-          if (!includedLaunch && mission['agencies'] !== null) {
-            for (const agency of mission['agencies']) {
-              if (agency['id'] === critery['id']) {
-                filtered.push(launch);
-                includedLaunch = true;
-                break;
+        // Agencies can be on missions property
+        if (!includedLaunch && launch['missions'] !== null) {
+          for (const mission of launch['missions']) {
+            if (!includedLaunch && mission['agencies'] !== null) {
+              for (const agency of mission['agencies']) {
+                if (agency['id'] === critery['id']) {
+                  filtered.push(launch);
+                  includedLaunch = true;
+                  break;
+                }
               }
             }
           }
         }
       }
+      this.items = filtered;
     });
-    this.items = filtered;
   }
 
   private filterByMissionType(critery) {
-    const filtered = [];
-    this.storeService.selectSnapShot(GlobalSlideTypes.launches).filter(launch => {
-      if (launch['missions'] !== null) {
-        for (const mission of launch['missions']) {
-          if (mission['type'] === critery['id']) {
-            filtered.push(launch);
-            break;
+    this.store.select('launch').pipe(
+      map(st => st.launches)
+    ).subscribe((launches) => {
+      const filtered = [];
+      launches.filter(launch => {
+        if (launch['missions'] !== null) {
+          for (const mission of launch['missions']) {
+            if (mission['type'] === critery['id']) {
+              filtered.push(launch);
+              break;
+            }
           }
         }
-      }
+      });
+      this.items = filtered;
     });
-    this.items = filtered;
   }
 }
