@@ -1,0 +1,61 @@
+{
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    }, {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/icons/**"
+        ]
+      }
+    }
+  ], "dataGroups": [
+    {
+      "name": "cache-first",
+      "urls": [
+        "http://localhost:8080/assets/launchagencies.json",
+        "http://localhost:8080/assets/launchmissions.json",
+        "http://localhost:8080/assets/launchstatus.json"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 10,
+        "maxAge": "7d"
+      }
+    },{
+      "name": "cache-first",
+      "urls": [
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 2000,
+        "maxAge": "1d"
+      }
+    }, {
+      "name": "api-first",
+      "urls": [
+        "https://launchlibrary.net/1.4/launch/1950-01-01?limit=2000"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 2000,
+        "maxAge": "1h",
+        "timeout": "2s"
+      }
+    }
+  ]
+}

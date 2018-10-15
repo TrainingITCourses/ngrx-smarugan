@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { of } from 'rxjs';
+import { StatusService } from './status.service';
 
 // 'https://launchlibrary.net/1.4/launch/1950-01-01?limit=2000'
 // environment.url + '/assets/launchlibrary.json'
@@ -12,26 +13,17 @@ import { of } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
+  private url = 'https://launchlibrary.net/1.4/launch/1950-01-01?limit=2000';
   private key = 'launches';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  public getLaunches$ = () => {
-    const localLaunches = localStorage.getItem(this.key);
-    if (localLaunches) {
-      // Return an observable
-      return of(JSON.parse(localLaunches));
-    } else {
-      return this.http
-      .get('https://launchlibrary.net/1.4/launch/1950-01-01?limit=2000')
-      .pipe(
-        map((res: any) => res.launches),
-        tap((launches) => {
-          localStorage.setItem(this.key, JSON.stringify(launches));
-        })
-      );
-    }
-  }
+  public getLaunches$ = () =>
+    this.http
+    .get(this.url)
+    .pipe(
+      map((res: any) => res.launches)
+    )
 
   public getAgencies$ = () =>
     this.http

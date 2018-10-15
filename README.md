@@ -1,14 +1,18 @@
-# Ejercicio práctico 3
+# Aplicaciones PWA
 
 ## Precondiciones
-1. Partir de la aplicación del ejercicio del tema 2
-2. Mantener el patrón Redux
-3. Dejar de usar el store creado en el ejercicio del tema 2
+
+1. Partir de la aplicación del ejercicio del tema 3
+2. Mantener el uso de NgRx
+3. Realizar todas las pruebas en modo producción
 
 ## Funcionalidad
-4. Mantener la misma funcionalidad del tema 2
+4. Mantener la misma funcionalidad del tema 3
+5. Mejorar la experiencia de usuario
 
 ## Requerimientos
-5. Instalar y registrar las librerías NgRx necesarias
-6. Usar efectos para las operaciones asíncronas
-7. Exportar una sesión de trabajo con el plugin para chrome de las Redux DevTo
+6. Convertir la aplicación en una PWA y desplegarla en modo producción
+7. Establecer grupos de caché de datos para las llamadas http:
+    * Los criterios de filtro en modo performance
+    * Los datos de lanzamientos en modo freshness
+8. Gestionar actualización de versiones al arrancar

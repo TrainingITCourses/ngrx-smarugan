@@ -1,3 +1,13 @@
+<div id="status-bar">
+  <div class="version">App version: {{ appVersion }}</div>
+  <div class="message"> | Launches: {{ messageLaunches$ | async }}</div>
+  <div class="message"> | Agencies: {{ messageAgencies$ | async }}</div>
+  <div class="message"> | Statuses: {{ messageStatuses$ | async }}</div>
+  <div class="message"> | MissionTypes: {{ messageMissionTypes$ | async }}</div>
+</div>
+
 <app-search (onFilterLaunches)="filterLaunches($event)"></app-search>
 <hr>
+
 <app-list-search [items]="items"></app-list-search>
+

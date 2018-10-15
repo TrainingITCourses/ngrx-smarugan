@@ -1,0 +1,18 @@
+#status-bar {
+  float: right;
+  font-size: 12px;
+  font-family: monospace;
+  background-color: lavender;
+  margin: 0;
+  padding: 4px;
+  border-top: solid 1px lightgray;
+  border-left: solid 1px lightgray;
+  border-bottom: solid 1px gray;
+  border-right: solid 1px gray;
+}
+
+#status-bar .version {
+  border-bottom: solid 1px lightgray;
+  padding: 2px 0;
+  margin-bottom: 4px;
+}

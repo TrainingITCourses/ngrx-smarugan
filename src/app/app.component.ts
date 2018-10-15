@@ -7,6 +7,9 @@ import { LoadStatuses } from './reducers/status/status.actions';
 import { LoadAgencies } from './reducers/agency/agency.actions';
 import { LoadMissionTypes } from './reducers/mission-type/mission-type.actions';
 import { map } from 'rxjs/operators';
+import { SwUpdate, UpdateAvailableEvent } from '@angular/service-worker';
+import { StatusService } from './services/status.service';
+import { Observable } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,14 +18,31 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  public appVersion = 21;
+  public messageLaunches$: Observable<String>;
+  public messageAgencies$: Observable<String>;
+  public messageStatuses$: Observable<String>;
+  public messageMissionTypes$: Observable<String>;
   public items: any = [];
 
-  constructor(private store: Store<State>) {
+  constructor(private store: Store<State>, swUpdate: SwUpdate, private statusService: StatusService) {
+    this.messageLaunches$ = this.statusService.messageLaunches$;
+    this.messageAgencies$ = this.statusService.messageAgencies$;
+    this.messageStatuses$ = this.statusService.messageStatuses$;
+    this.messageMissionTypes$ = this.statusService.messageMissionTypes$;
+
     // Load data
     this.store.dispatch(new LoadLaunches());
     this.store.dispatch(new LoadStatuses());
     this.store.dispatch(new LoadAgencies());
     this.store.dispatch(new LoadMissionTypes());
+
+    if (swUpdate.isEnabled) {
+      swUpdate.available.subscribe((event: UpdateAvailableEvent) => {
+        const msg = 'New version available. Download now?';
+        if (confirm(msg)) { window.location.reload(); }
+      });
+    }
   }
 
   filterLaunches(critery) {
