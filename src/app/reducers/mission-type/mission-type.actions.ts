@@ -2,7 +2,8 @@ import { Action } from '@ngrx/store';
 
 export enum MissionTypeActionTypes {
   LoadMissionTypes = '[MissionType] Load MissionTypes',
-  LoadedMissionTypes = '[MissionType] Loaded MissionTypes'
+  LoadedMissionTypes = '[MissionType] Loaded MissionTypes',
+  ErrMissionTypes = '[MissionType] Error'
 }
 
 export class LoadMissionTypes implements Action {
@@ -15,4 +16,10 @@ export class LoadedMissionTypes implements Action {
   constructor(readonly payload?: any) {}
 }
 
-export type MissionTypeActions = LoadMissionTypes | LoadedMissionTypes;
+export class ErrMissionTypes implements Action {
+  readonly type = MissionTypeActionTypes.ErrMissionTypes;
+
+  constructor(readonly payload?: any) {}
+}
+
+export type MissionTypeActions = LoadMissionTypes | LoadedMissionTypes | ErrMissionTypes;

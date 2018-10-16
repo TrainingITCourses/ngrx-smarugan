@@ -6,6 +6,7 @@ export interface State {
   agencies: any;
   loaded: boolean;
   loading: boolean;
+  err?: string;
 }
 
 export const initialState: State = {
@@ -20,8 +21,10 @@ export function reducer(state = initialState, action: AgencyActions): State {
   switch (action.type) {
     case AgencyActionTypes.LoadAgencies:
       return { ...state, loading: true};
-    case AgencyActionTypes.LoadedAgencies:
-      return { agencies: action.payload, loaded: true, loading: false };
+      case AgencyActionTypes.LoadedAgencies:
+        return { agencies: action.payload, loaded: true, loading: false };
+      case AgencyActionTypes.ErrAgencies:
+        return { ...state, err: action.payload };
     default:
       return state;
   }

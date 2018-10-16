@@ -6,6 +6,7 @@ export interface State {
   statuses: any;
   loaded: boolean;
   loading: boolean;
+  err?: string;
 }
 
 export const initialState: State = {
@@ -20,6 +21,8 @@ export function reducer(state = initialState, action: StatusActions): State {
       return { ...state, loading: true};
     case StatusActionTypes.LoadedStatuses:
       return { statuses: action.payload, loaded: true, loading: false };
+    case StatusActionTypes.ErrStatuses:
+      return { ...state, err: action.payload};
     default:
       return state;
   }

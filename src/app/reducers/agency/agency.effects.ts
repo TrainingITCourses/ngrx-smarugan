@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 
 import { ApiService } from 'src/app/services/api.service';
-import { AgencyActionTypes, AgencyActions, LoadedAgencies } from './agency.actions';
-import { mergeMap, map, tap } from 'rxjs/operators';
+import { AgencyActionTypes, AgencyActions, LoadedAgencies, ErrAgencies } from './agency.actions';
+import { mergeMap, map, tap, catchError } from 'rxjs/operators';
 import { StatusService } from 'src/app/services/status.service';
+import { of } from 'rxjs';
 
 @Injectable()
 export class AgencyEffects {
@@ -17,8 +18,8 @@ export class AgencyEffects {
       this.statusService.messageAgencies$.next('Loading agencies...');
       return this.apiService.getAgencies$().pipe(
         map((agencies) => new LoadedAgencies(agencies)),
-        tap((agencies) => this.statusService.messageAgencies$.next('Loaded agencies.'))
-        // catchError((err) => new ErrAgencies(err.message))
+        tap((agencies) => this.statusService.messageAgencies$.next('Loaded agencies.')),
+        catchError((err) => of(new ErrAgencies(err.message)))
       );
     })
   );

@@ -2,7 +2,8 @@ import { Action } from '@ngrx/store';
 
 export enum StatusActionTypes {
   LoadStatuses = '[Status] Load Statuses',
-  LoadedStatuses = '[Status] Loaded Statuses'
+  LoadedStatuses = '[Status] Loaded Statuses',
+  ErrStatuses = '[Statuse] Error'
 }
 
 export class LoadStatuses implements Action {
@@ -15,4 +16,10 @@ export class LoadedStatuses implements Action {
   constructor(readonly payload?: any) {}
 }
 
-export type StatusActions = LoadStatuses | LoadedStatuses;
+export class ErrStatuses implements Action {
+  readonly type = StatusActionTypes.ErrStatuses;
+
+  constructor(readonly payload?: any) {}
+}
+
+export type StatusActions = LoadStatuses | LoadedStatuses | ErrStatuses;

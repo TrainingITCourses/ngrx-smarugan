@@ -6,6 +6,7 @@ export interface State {
   missionTypes: any;
   loaded: boolean;
   loading: boolean;
+  err?: string;
 }
 
 export const initialState: State = {
@@ -22,6 +23,8 @@ export function reducer(state = initialState, action: MissionTypeActions): State
       return { ...state, loading: true };
     case MissionTypeActionTypes.LoadedMissionTypes:
       return { missionTypes: action.payload, loaded: true, loading: false };
+    case MissionTypeActionTypes.ErrMissionTypes:
+      return { ...state, err: action.payload };
     default:
       return state;
   }
