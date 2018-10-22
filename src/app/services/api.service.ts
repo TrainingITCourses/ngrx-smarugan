@@ -1,10 +1,11 @@
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../src/environments/environment';
+import { isPlatformBrowser } from '@angular/common';
 
 // 'https://launchlibrary.net/1.4/launch/1950-01-01?limit=2000'
 // environment.url + '/assets/launchlibrary.json'
@@ -15,23 +16,29 @@ export class ApiService {
   public launches: any[];
   public statuses: any[];
   private key = 'launches';
-  constructor(private http: HttpClient) {
-    const launches = localStorage.getItem(this.key);
-    if (launches) {
-      this.launches = JSON.parse(launches);
-    }
+  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: string) {
   }
 
   public getLaunches$ = (): Observable<any[]> => {
-    if (this.launches) { return of(this.launches); }
+    console.log('platformBroser ', this.platformId, isPlatformBrowser(this.platformId));
+
+    if (isPlatformBrowser(this.platformId)) {
+      const launches = localStorage.getItem(this.key);
+      if (launches) {
+        return of(JSON.parse(launches));
+      }
+    }
+
     return this.http
       .get('https://launchlibrary.net/1.4/launch/1950-01-01?limit=2000')
       .pipe(
         map((res: any) => res.launches),
         tap(res => (this.launches = res)),
-        tap(res =>
-          localStorage.setItem(this.key, JSON.stringify(this.launches))
-        )
+        tap(res => {
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem(this.key, JSON.stringify(this.launches));
+          }
+        })
       );
   }
 

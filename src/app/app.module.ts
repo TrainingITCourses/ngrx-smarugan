@@ -16,7 +16,7 @@ import { ItemSearchComponent } from './list-search/item-search/item-search.compo
     ItemSearchComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     ReactiveFormsModule,
     HttpClientModule
   ],

@@ -1,15 +1,14 @@
-# Ejercicio práctico 2
-
+# Aplicaciones SSR con Universal
+Este ejercicio se realizará para tomar contacto con la tecnología. Su estado actual dificulta crear aplicaciones realistas. Se esperan mejoras en la herramientas en los próximos meses.
+ 
 ## Precondiciones
 1. Partir de la aplicación del ejercicio del tema 1
-2. Mantener el patrón contenedor/presentadores
-3. Mantener estrategia OnPush
-4. Usar exclusivamente librerías propias del framework y la RxJs
+2. No utilizar nada de PWA
+3. Dado que es una tecnología muy nueva....
 
 ## Funcionalidad
-5. Mantener la misma funcionalidad del tema 1
+4. Mantener la funcionalidad lo más simple posible
 
 ## Requerimientos
-6. Implementar el patrón redux con al menos tres acciones
-7. Modificar el estado del store despachando acciones
-8. Consumir el estado del store mediante selectores observables y snapshot
+5. Mejorar la experiencia de primera visita
+6. Ver código fuente indexable
